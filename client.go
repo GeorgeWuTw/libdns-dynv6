@@ -109,19 +109,19 @@ func (p *Provider) getZone(req *http.Request) (*zone, error) {
 
 func (p *Provider) getZoneByName(ctx context.Context, zoneName string) (*zone, error) {
 	zoneName = strings.TrimSuffix(zoneName, ".")
- 
+	
 	zones, err := p.getZones(ctx)
 	if err != nil {
 		return nil, err
 	}
- 
+	
 	for _, z := range zones {
 		if strings.EqualFold(z.Name, zoneName) {
 			zone := z
 			return &zone, nil
 		}
 	}
- 
+	
 	return nil, fmt.Errorf("zone not found: %s", zoneName)
 }
 
