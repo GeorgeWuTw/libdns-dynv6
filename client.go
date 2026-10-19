@@ -108,13 +108,21 @@ func (p *Provider) getZone(req *http.Request) (*zone, error) {
 }
 
 func (p *Provider) getZoneByName(ctx context.Context, zoneName string) (*zone, error) {
-	// remove trailing dot
 	zoneName = strings.TrimSuffix(zoneName, ".")
-	req, err := p.newRequest(ctx, "GET", "https://dynv6.com/api/v2/zones/by-name/"+zoneName, nil)
+ 
+	zones, err := p.getZones(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return p.getZone(req)
+ 
+	for _, z := range zones {
+		if strings.EqualFold(z.Name, zoneName) {
+			zone := z
+			return &zone, nil
+		}
+	}
+ 
+	return nil, fmt.Errorf("zone not found: %s", zoneName)
 }
 
 func (p *Provider) getZoneByID(ctx context.Context, zoneID int64) (*zone, error) {
